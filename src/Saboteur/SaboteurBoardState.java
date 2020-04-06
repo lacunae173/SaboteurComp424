@@ -132,6 +132,9 @@ public class SaboteurBoardState extends BoardState {
         this.winner = pbs.winner;
         this.turnPlayer = pbs.turnPlayer;
         this.turnNumber = pbs.turnNumber;
+
+        this.intBoard = new int[BOARD_SIZE*3][BOARD_SIZE*3];
+        getIntBoard();
     }
 
     // For server purposes.

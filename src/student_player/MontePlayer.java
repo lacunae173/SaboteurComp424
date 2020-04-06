@@ -18,11 +18,12 @@ public class MontePlayer extends SaboteurPlayer {
             SaboteurBoardState state = (SaboteurBoardState) boardState.clone();
             int win = 0;
             state.processMove(m);
-            for (int i = 0; i < 10; i++) {
-                while (!state.gameOver()) {
-                    state.processMove(state.getRandomMove());
+            for (int i = 0; i < 100; i++) {
+                SaboteurBoardState bs = (SaboteurBoardState) state.clone();
+                while (!bs.gameOver()) {
+                    bs.processMove(bs.getRandomMove());
                 }
-                if (state.getWinner() == player) {
+                if (bs.getWinner() == player) {
                     win++;
                 }
             }
