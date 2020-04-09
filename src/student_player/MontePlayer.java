@@ -14,23 +14,58 @@ public class MontePlayer extends SaboteurPlayer {
         ArrayList<SaboteurMove> moves = boardState.getAllLegalMoves();
         SaboteurMove maxMove = null;
         int maxWin = Integer.MIN_VALUE;
+
         for (SaboteurMove m: moves) {
-            SaboteurBoardState state = (SaboteurBoardState) boardState.clone();
+//            SaboteurBoardState state = (SaboteurBoardState) boardState.clone();
+//            int win = 0;
+//            state.processMove(m);
+//            for (int i = 0; i < 20; i++) {
+//                SaboteurBoardState bs = (SaboteurBoardState) state.clone();
+//                while (!bs.gameOver()) {
+//                    bs.processMove(bs.getRandomMove());
+//                }
+//                if (bs.getWinner() == player) {
+//                    win++;
+//                }
+//            }
+//            if (win > maxWin) {
+//                maxWin = win;
+//                maxMove = m;
+//            }
+
+        BeliefState startStates = new BeliefState(player);
+        for (int i = 0; i < 3; i++) {
+            startStates.addState(new AvailableState(boardState, i));
+        }
+            startStates.processMove(m);
             int win = 0;
-            state.processMove(m);
-            for (int i = 0; i < 100; i++) {
-                SaboteurBoardState bs = (SaboteurBoardState) state.clone();
-                while (!bs.gameOver()) {
-                    bs.processMove(bs.getRandomMove());
-                }
-                if (bs.getWinner() == player) {
-                    win++;
+            for (int i = 0; i < 1; i++) {
+                for (AvailableState s: startStates.states) {
+                    win += s.beliefState.simulate();
                 }
             }
+
             if (win > maxWin) {
                 maxWin = win;
                 maxMove = m;
             }
+
+//            int win = 0;
+//            RandomState s = new RandomState(boardState);
+//            s.processMove(m);
+//            for (int i = 0; i < 30; i++) {
+//
+//                while (!s.gameOver()) {
+//                    s.processMove(s.getRandomMove());
+//                }
+//                if (s.getWinner() == player) {
+//                    win++;
+//                }
+//            }
+//            if (win > maxWin) {
+//                maxWin = win;
+//                maxMove = m;
+//            }
         }
         return maxMove;
     }

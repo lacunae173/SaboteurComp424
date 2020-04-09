@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
-public class AvailableState {
+public class RandomState {
 
     public static final int BOARD_SIZE = 14;
     public static final int originPos = 5;
@@ -54,51 +54,9 @@ public class AvailableState {
     private int winner;
     private Random rand;
 
-    BeliefState beliefState;
+    //BeliefState beliefState;
 
-    public AvailableState(AvailableState state) {
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            System.arraycopy(state.board[i], 0, this.board[i], 0, BOARD_SIZE);
-        }
-        turnPlayer = state.turnPlayer;
-
-        for(int i=0;i<state.player1Cards.size();i++){
-            player1Cards.add(i,SaboteurCard.copyACard(state.player1Cards.get(i).getName()));
-        }
-        for(int i=0;i<state.player2Cards.size();i++){
-            player2Cards.add(i,SaboteurCard.copyACard(state.player2Cards.get(i).getName()));
-        }
-
-        turnPlayer = state.turnPlayer;
-        turnNumber = state.turnNumber;
-        winner = state.winner;
-        rand = new Random(2019);
-
-//        if (card != null) {
-//            if (turnPlayer == 0) {
-//                player1Cards.add(SaboteurCard.copyACard(card.getName()));
-//            } else {
-//                player2Cards.add(SaboteurCard.copyACard(card.getName()));
-//            }
-//        }
-        player1nbMalus = state.player1nbMalus;
-        player2nbMalus = state.player2nbMalus;
-        for (int i = 0; i < BOARD_SIZE * 3; i++) {
-            System.arraycopy(state.intBoard[i], 0, this.intBoard[i], 0, BOARD_SIZE);
-        }
-        System.arraycopy(state.hiddenCards, 0, this.hiddenCards, 0, 3);
-        System.arraycopy(state.hiddenRevealed, 0, this.hiddenRevealed, 0, 3);
-        System.arraycopy(state.player1hiddenRevealed, 0, this.player1hiddenRevealed, 0, 3);
-        System.arraycopy(state.player2hiddenRevealed, 0, this.player2hiddenRevealed, 0, 3);
-
-        setUpDeck();
-
-
-        beliefState = new BeliefState(turnPlayer);
-
-    }
-
-    public AvailableState(AvailableState state, SaboteurCard card) {
+    public RandomState(RandomState state) {
         //this.deck = SaboteurCard.getDeck();
 
         for (int i = 0; i < BOARD_SIZE; i++) {
@@ -118,13 +76,7 @@ public class AvailableState {
         winner = state.winner;
         rand = new Random(2019);
 
-        if (card != null) {
-            if (turnPlayer == 0) {
-                player1Cards.add(SaboteurCard.copyACard(card.getName()));
-            } else {
-                player2Cards.add(SaboteurCard.copyACard(card.getName()));
-            }
-        }
+
         player1nbMalus = state.player1nbMalus;
         player2nbMalus = state.player2nbMalus;
         for (int i = 0; i < BOARD_SIZE * 3; i++) {
@@ -132,10 +84,13 @@ public class AvailableState {
         }
         System.arraycopy(state.hiddenCards, 0, this.hiddenCards, 0, 3);
         System.arraycopy(state.hiddenRevealed, 0, this.hiddenRevealed, 0, 3);
-        setUpDeck();
+
+        for(int i=0;i<state.deck.size();i++){
+            deck.add(i,SaboteurCard.copyACard(state.deck.get(i).getName()));
+        }
 
 
-        beliefState = new BeliefState(turnPlayer);
+        //beliefState = new BeliefState(turnPlayer);
     }
 
     public void setUpDeck() {
@@ -151,7 +106,7 @@ public class AvailableState {
     }
 
 
-    public AvailableState(SaboteurBoardState boardState, int nuggetPos) {
+    public RandomState(SaboteurBoardState boardState) {
 
         board = boardState.getHiddenBoard();
 
@@ -187,24 +142,25 @@ public class AvailableState {
                 posSet[i] = true;
             }
         }
-        if (!knowNugget) {
-            this.board[hiddenPos[nuggetPos][0]][hiddenPos[nuggetPos][1]] = new SaboteurTile("nugget");
-            list.remove("nugget");
-            posSet[nuggetPos] = true;
-//            for(int i = 0; i < 3; i++) {
-//                if (!hiddenRevealed[i]) {
-//                        int idx = startRand.nextInt(list.size());
-//                        this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(list.remove(idx));
-//
-//                }
-//            }
-        } //else {
-            for(int i = 0; i < 3; i++) {
-                if (!posSet[i]) {
-                    int idx = startRand.nextInt(list.size());
-                    this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(list.remove(idx));
-                }
+//        if (!knowNugget) {
+//            this.board[hiddenPos[nuggetPos][0]][hiddenPos[nuggetPos][1]] = new SaboteurTile("nugget");
+//            list.remove("nugget");
+//            posSet[nuggetPos] = true;
+////            for(int i = 0; i < 3; i++) {
+////                if (!hiddenRevealed[i]) {
+////                        int idx = startRand.nextInt(list.size());
+////                        this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(list.remove(idx));
+////
+////                }
+////            }
+//        } //else {
+        for(int i = 0; i < 3; i++) {
+            if (!posSet[i]) {
+                int idx = startRand.nextInt(list.size());
+                this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(list.remove(idx));
             }
+        }
+
         //}
 
 //        if (knowNugget) {
@@ -234,37 +190,52 @@ public class AvailableState {
             this.hiddenCards[i] = this.board[hiddenPos[i][0]][hiddenPos[i][1]];
         }
 
+        this.deck = SaboteurCard.getDeck();
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (!((i == 12 && (j == 3 || j == 5 || j == 7)) || (i == 5 && j == 5))) {
+                    removeCardFromList(board[i][j], deck);
+                }
+            }
+        }
+        for (SaboteurCard c: player1Cards) {
+            removeCardFromList(c, deck);
+        }
+        for (SaboteurCard c: player1Cards) {
+            removeCardFromList(c, deck);
+        }
+
         //initialize the players hands:
         //Since the other players hand is not available, randomly select hand for him
         //Listing all hands may be too tedious
         if (this.player1Cards.size() == 0) {
-            String[] tiles ={"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"};
-            for(int i=0;i<tiles.length;i++){
-                player1Cards.add(new SaboteurTile(tiles[i]));
+            for(int i=0;i<7;i++){
+                this.player1Cards.add(this.deck.remove(0));
+                //this.player2Cards.add(this.Deck.remove(0));
             }
-            player1Cards.add(new SaboteurDestroy());
-            player1Cards.add(new SaboteurMalus());
-            player1Cards.add(new SaboteurBonus());
-            player1Cards.add(new SaboteurMap());
         } else {
-            String[] tiles ={"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"};
-            for(int i=0;i<tiles.length;i++){
-                player2Cards.add(new SaboteurTile(tiles[i]));
+            for(int i=0;i<7;i++){
+                //this.player1Cards.add(this.Deck.remove(0));
+                this.player2Cards.add(this.deck.remove(0));
             }
-            player2Cards.add(new SaboteurDestroy());
-            player2Cards.add(new SaboteurMalus());
-            player2Cards.add(new SaboteurBonus());
-            player2Cards.add(new SaboteurMap());
         }
 
         //deck here is a list of all possible cards, not the actually deck (draw case is not taken into account)
-        setUpDeck();
+        //setUpDeck();
 
         rand = new Random(2019);
         winner = Board.NOBODY;
         turnPlayer = boardState.getTurnPlayer();
         turnNumber = 0;
-        beliefState = new BeliefState(turnPlayer);
+        //beliefState = new BeliefState(turnPlayer);
+        if (turnPlayer == 1) {
+            Arrays.fill(player2hiddenRevealed, true);
+            System.arraycopy(hiddenRevealed, 0, player1hiddenRevealed, 0, 3);
+        } else {
+            Arrays.fill(player1hiddenRevealed, true);
+            System.arraycopy(hiddenRevealed, 0, player2hiddenRevealed, 0, 3);
+        }
+
     }
 
     /**
@@ -427,15 +398,8 @@ public class AvailableState {
             }
         }
         else if(testCard instanceof SaboteurDrop){
-            if(turnPlayer==1) {
-                this.player1Cards.remove(pos[0]);
-            }
-            else {
-                if (player2Cards.size() < 7) {
-                    System.out.println("?");
-                }
-                this.player2Cards.remove(pos[0]);
-            }
+            if(turnPlayer==1) this.player1Cards.remove(pos[0]);
+            else this.player2Cards.remove(pos[0]);
         }
 
 //        for (SaboteurCard c: deck) {
@@ -447,58 +411,35 @@ public class AvailableState {
 //                this.player2Cards.add(c);
 //            }
 //        }
-       // this.draw();
+        //this.draw();
 
 
         this.updateWinner();
         turnPlayer = 1 - turnPlayer; // Swap player
         turnNumber++;
+        this.draw();
 
-        if (turnPlayer == 1) { //this turn is player 0
-            if (player2Cards.size() > 7) {
-                AvailableState newState = new AvailableState(this);
-                newState.player2Cards.add(SaboteurCard.copyACard(m.getCardPlayed().getName()));
-                beliefState.addState(newState);
-            } else {
-                for (SaboteurCard c: deck) {
-                    AvailableState newState = new AvailableState(this);
-                    newState.player2Cards.add(SaboteurCard.copyACard(c.getName()));
-                    beliefState.addState(newState);
-                }
-            }
-        } else {
-            if (player1Cards.size() > 7) {
-                AvailableState newState = new AvailableState(this);
-                newState.player1Cards.add(SaboteurCard.copyACard(m.getCardPlayed().getName()));
-                beliefState.addState(newState);
-            } else {
-                for (SaboteurCard c: deck) {
-                    AvailableState newState = new AvailableState(this);
-                    newState.player1Cards.add(SaboteurCard.copyACard(c.getName()));
-                    beliefState.addState(newState);
-                }
-            }
-        }
-//        if (turnPlayer == 1 && player2Cards.size() == 19 || turnPlayer == 0 && player1Cards.size() == 19) {
-//            beliefState.addState(new AvailableState(this, m.getCardPlayed()));
+//        if (turnPlayer == 1 && player1Cards.size() == 19 || turnPlayer == 0 && player2Cards.size() == 19) {
+//            //beliefState.addState(new AvailableState(this, m.getCardPlayed()));
 //        } else {
 //            for (SaboteurCard c: deck) {
-//                beliefState.addState(new AvailableState(this, c));
+//                //beliefState.addState(new AvailableState(this, c));
 //            }
 //        }
 
     }
 
-//    private void draw(){
-//        if(this.deck.size()>0){
-//            if(turnPlayer==1){
-//                this.player1Cards.add(this.deck.remove(0));
-//            }
-//            else{
-//                this.player2Cards.add(this.deck.remove(0));
-//            }
-//        }
-//    }
+    private void draw(){
+        Collections.shuffle(deck);
+        if(this.deck.size()>0){
+            if(turnPlayer==1){
+                this.player1Cards.add(SaboteurCard.copyACard(this.deck.get(0).getName()));
+            }
+            else{
+                this.player2Cards.add(SaboteurCard.copyACard(this.deck.get(0).getName()));
+            }
+        }
+    }
 
     private void updateWinner() {
 
@@ -520,8 +461,8 @@ public class AvailableState {
     }
 
     public boolean gameOver() {
-        //return this.Deck.size()==0 && this.player1Cards.size()==0 && this.player2Cards.size()==0 || winner != Board.NOBODY;
-        return winner != Board.NOBODY;
+        return this.deck.size()==0 && this.player1Cards.size()==0 && this.player2Cards.size()==0 || winner != Board.NOBODY;
+        //return winner != Board.NOBODY;
     }
 
     private boolean pathToHidden(SaboteurTile[] objectives){
@@ -551,6 +492,9 @@ public class AvailableState {
                     currentTargetIdx = i;
                     break;
                 }
+            }
+            if (currentTargetIdx == -1) {
+                System.out.println();
             }
             if(!this.hiddenRevealed[currentTargetIdx]) {  //verify that the current target has not been already discovered. Even if there is a destruction event, the target keeps being revealed!
 
