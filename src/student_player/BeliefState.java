@@ -28,28 +28,37 @@ public class BeliefState {
         }
     }
 
-    public int simulate() {
-        int win = 0;
-        for (AvailableState s: states) {
-
-            if (s.gameOver() || s.getTurnNumber() > 10) {
-
+    public int simulate(int win) {
+        int dist = Integer.MAX_VALUE;
+        for (AvailableState s : states) {
+            if (s.gameOver() || s.getTurnNumber() > 50) {
                 if (s.getWinner() == player) {
                     win++;
                     //continue;
                 }
             } else {
-                for (SaboteurMove move : s.getAllLegalMoves()) {
+                SaboteurMove tmp = s.getRandomMove();
+                //For a current state, generate 10 possible moves and use heuristic function to select the best one
+                for(int i =10;i>0;i--){
+                    SaboteurMove move = s.getRandomMoveFromPM();
                     AvailableState scp = new AvailableState(s);
                     scp.processMove(move);
-                    win += scp.beliefState.simulate();
-                }
-            }
+                    if(scp.distanceToHidden()<dist){
+                        dist = scp.distanceToHidden();
+                        tmp = move;
+                    }
 
+                }
+                SaboteurMove move = tmp;
+                AvailableState scp = new AvailableState(s);
+                scp.processMove(move);
+                addState(scp);
+            }
+            return s.beliefState.simulate(win);
         }
+
         //System.out.println("returning");
         return win;
-
     }
 
 }

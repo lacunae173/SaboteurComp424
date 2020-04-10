@@ -91,7 +91,13 @@ public class SaboteurBoardState extends BoardState {
         turnPlayer = FIRST_PLAYER;
         turnNumber = 0;
     }
-
+    public Object copyBoard() {
+        // You are not allowed to use this method for your agent.
+        SaboteurBoardState bs = new SaboteurBoardState();
+        bs.board=this.getHiddenBoard();
+        System.out.println("I did not use clone method");
+        return bs;
+    }
     // You are not allowed to use this method for your agent.
     // Using it will result in potential errors, because it does not returns a correct copy.
     // Here for server purposes.
@@ -456,7 +462,7 @@ public class SaboteurBoardState extends BoardState {
         ArrayList<int[]> possiblePos = new ArrayList<int[]>();
         int[][] moves = {{0, -1},{0, 1},{1, 0},{-1, 0}}; //to make the test faster, we simply verify around all already placed tiles.
         for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
+            for (int j = originPos; j < BOARD_SIZE; j++) {
                 if (this.board[i][j] != null) {
                     for (int m = 0; m < 4; m++) {
                         if (0 <= i+moves[m][0] && i+moves[m][0] < BOARD_SIZE && 0 <= j+moves[m][1] && j+moves[m][1] < BOARD_SIZE) {
@@ -472,7 +478,7 @@ public class SaboteurBoardState extends BoardState {
     }
 
     public ArrayList<SaboteurMove> getAllLegalMoves() {
-        // Given the current player hand, gives back all legal moves he can play.
+        // Given the current player hand, gives back all legal moves she can play.
         ArrayList<SaboteurCard> hand;
         boolean isBlocked;
         if(turnPlayer == 1){
@@ -851,7 +857,7 @@ public class SaboteurBoardState extends BoardState {
 
                 if (cardPath(originTargets, targetPos, true)) { //checks that there is a cardPath
                     System.out.println("card path found"); //todo remove
-                    this.printBoard();
+//                    this.printBoard();
                     //next: checks that there is a path of ones.
                     ArrayList<int[]> originTargets2 = new ArrayList<>();
                     //the starting points

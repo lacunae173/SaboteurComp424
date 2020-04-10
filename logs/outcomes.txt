@@ -1,0 +1,39 @@
+2,NearlyRandomPlayer,RandomPlayer,GAMEOVER DRAW,NOBODY,56,game00002.log,
+3,RandomPlayer,Human,GAMEOVER DRAW,NOBODY,56,game00003.log,
+4,Human,RandomPlayer,GAMEOVER USER CANCEL UNDECIDED,NOBODY,2,game00004.log,USER CANCEL
+5,RandomPlayer,Human,GAMEOVER DRAW,NOBODY,56,game00005.log,
+6,RandomPlayer,Human,1,Human,36,game00006.log,
+7,Human,RandomPlayer,GAMEOVER USER CANCEL UNDECIDED,NOBODY,2,game00007.log,USER CANCEL
+8,Human,RandomPlayer,GAMEOVER USER CANCEL UNDECIDED,NOBODY,2,game00008.log,USER CANCEL
+9,RandomPlayer,Human,1,Human,36,game00009.log,
+10,RandomPlayer,Human,1,Human,28,game00010.log,
+11,RandomPlayer,Human,1,Human,44,game00011.log,
+12,RandomPlayer,Human,1,Human,44,game00012.log,
+13,RandomPlayer,Human,1,Human,30,game00013.log,
+14,RandomPlayer,Human,GAMEOVER DRAW,NOBODY,56,game00014.log,
+15,RandomPlayer,Human,1,Human,34,game00015.log,
+16,RandomPlayer,Human,1,Human,34,game00016.log,
+17,RandomPlayer,Human,1,Human,28,game00017.log,
+18,RandomPlayer,Human,0,RandomPlayer,29,game00018.log,
+19,RandomPlayer,Human,GAMEOVER DRAW,NOBODY,56,game00019.log,
+20,RandomPlayer,Human,GAMEOVER DRAW,NOBODY,56,game00020.log,
+21,RandomPlayer,Human,1,Human,40,game00021.log,
+22,RandomPlayer,Human,1,Human,32,game00022.log,
+23,RandomPlayer,Human,1,Human,42,game00023.log,
+24,RandomPlayer,Human,1,Human,38,game00024.log,
+25,RandomPlayer,Human,1,Human,32,game00025.log,
+26,RandomPlayer,Human,0,RandomPlayer,27,game00026.log,
+29,Player,Human,1,Human,14,game00029.log,TIMEOUT
+30,RandomPlayer,Player,1,Player,42,game00030.log,
+31,Player,Human,1,Human,28,game00031.log,TIMEOUT
+32,RandomPlayer,Player,0,RandomPlayer,19,game00032.log,TIMEOUT
+33,RandomPlayer,Player,0,RandomPlayer,21,game00033.log,TIMEOUT
+34,RandomPlayer,Player,0,RandomPlayer,17,game00034.log,TIMEOUT
+35,RandomPlayer,Player,GAMEOVER DRAW,NOBODY,56,game00035.log,
+36,RandomPlayer,Player,GAMEOVER DRAW,NOBODY,56,game00036.log,
+37,Player,RandomPlayer,GAMEOVER DRAW,NOBODY,56,game00037.log,
+38,RandomPlayer,Player,GAMEOVER DRAW,NOBODY,56,game00038.log,
+39,RandomPlayer,Player,GAMEOVER DRAW,NOBODY,56,game00039.log,
+40,RandomPlayer,Player,GAMEOVER DRAW,NOBODY,56,game00040.log,
+41,RandomPlayer,Player,0,RandomPlayer,37,game00041.log,TIMEOUT
+42,RandomPlayer,Player,GAMEOVER DRAW,NOBODY,56,game00042.log,
