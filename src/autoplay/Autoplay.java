@@ -22,9 +22,9 @@ import java.lang.ProcessBuilder.Redirect;
 //
 public class Autoplay {
     public static void main(String args[]) {
-        int n_games;
+        int n_games = 50;
         try {
-            n_games = Integer.parseInt(args[0]);
+            //n_games = Integer.parseInt(args[0]);
             if (n_games < 1) {
                 throw new Exception();
             }
@@ -42,7 +42,7 @@ public class Autoplay {
 
             //One need to change those variables
             ProcessBuilder client1_pb = new ProcessBuilder("java", "-cp", "bin", "-Xms520m", "-Xmx520m",
-                    "boardgame.Client", "Saboteur.RandomSaboteurPlayer");
+                    "boardgame.Client", "Saboteur.MontePlayer");
             client1_pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 
             ProcessBuilder client2_pb = new ProcessBuilder("java", "-cp", "bin", "-Xms520m", "-Xmx520m",

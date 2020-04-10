@@ -205,7 +205,7 @@ public class AvailableState {
         boolean[] posSet = {false, false, false};
         for(int i = 0; i < 3; i++) {
             SaboteurTile tile = this.board[hiddenPos[i][0]][hiddenPos[i][1]];
-            if (!tile.getIdx().equals("8")) {
+            if (tile.getIdx().equals("nugget")) {
                 hiddenRevealed[i] = true;
                 this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(tile.getIdx());
                 list.remove(tile.getIdx());

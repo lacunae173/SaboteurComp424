@@ -29,7 +29,17 @@ public class RandomState {
     // Note: Player 1 is active when turnplayer is 1;
     private ArrayList<SaboteurCard> player1Cards = new ArrayList<>(); //hand of player 1
     private ArrayList<SaboteurCard> player2Cards = new ArrayList<>(); //hand of player 2
+
+    public int getPlayer1nbMalus() {
+        return player1nbMalus;
+    }
+
     private int player1nbMalus;
+
+    public int getPlayer2nbMalus() {
+        return player2nbMalus;
+    }
+
     private int player2nbMalus;
     //TODO: do we know other players hidden?
     private boolean[] player1hiddenRevealed = {false,false,false};
@@ -38,6 +48,25 @@ public class RandomState {
     public static final int[][] hiddenPos = {{originPos+7,originPos-2},{originPos+7,originPos},{originPos+7,originPos+2}};
     protected SaboteurTile[] hiddenCards = new SaboteurTile[3];
     private boolean[] hiddenRevealed = {false,false,false}; //whether hidden at pos1 is revealed, hidden at pos2 is revealed, hidden at pos3 is revealed.
+
+    public int getTurnPlayer() {
+        return turnPlayer;
+    }
+
+    public int nuggetRevealed() {
+        for (int i = 0; i < 3; i++) {
+            if (turnPlayer == 1) {
+                if (player1hiddenRevealed[i] && hiddenCards[i].getIdx().equals("nugget")) {
+                    return i;
+                }
+            } else {
+                if (player2hiddenRevealed[i] && hiddenCards[i].getIdx().equals("nugget")) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
 
     private int turnPlayer;
 
@@ -84,6 +113,9 @@ public class RandomState {
         }
         System.arraycopy(state.hiddenCards, 0, this.hiddenCards, 0, 3);
         System.arraycopy(state.hiddenRevealed, 0, this.hiddenRevealed, 0, 3);
+        System.arraycopy(state.player1hiddenRevealed, 0, this.player1hiddenRevealed, 0, 3);
+        System.arraycopy(state.player2hiddenRevealed, 0, this.player2hiddenRevealed, 0, 3);
+
 
         for(int i=0;i<state.deck.size();i++){
             deck.add(i,SaboteurCard.copyACard(state.deck.get(i).getName()));
@@ -127,8 +159,8 @@ public class RandomState {
         list.add("hidden1");
         list.add("hidden2");
         list.add("nugget");
-        Random startRand = new Random();
-        boolean knowNugget = false;
+        //Random startRand = new Random();
+        //boolean knowNugget = false;
         boolean[] posSet = {false, false, false};
         for(int i = 0; i < 3; i++) {
             SaboteurTile tile = this.board[hiddenPos[i][0]][hiddenPos[i][1]];
@@ -136,55 +168,18 @@ public class RandomState {
                 hiddenRevealed[i] = true;
                 this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(tile.getIdx());
                 list.remove(tile.getIdx());
-                if (tile.getIdx().equals("nugget")) {
-                    knowNugget = true;
-                }
+//                if (tile.getIdx().equals("nugget")) {
+//                    knowNugget = true;
+//                }
                 posSet[i] = true;
             }
         }
-//        if (!knowNugget) {
-//            this.board[hiddenPos[nuggetPos][0]][hiddenPos[nuggetPos][1]] = new SaboteurTile("nugget");
-//            list.remove("nugget");
-//            posSet[nuggetPos] = true;
-////            for(int i = 0; i < 3; i++) {
-////                if (!hiddenRevealed[i]) {
-////                        int idx = startRand.nextInt(list.size());
-////                        this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(list.remove(idx));
-////
-////                }
-////            }
-//        } //else {
         for(int i = 0; i < 3; i++) {
             if (!posSet[i]) {
-                int idx = startRand.nextInt(list.size());
-                this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(list.remove(idx));
+                //int idx = startRand.nextInt(list.size());
+                this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(list.remove(0));
             }
         }
-
-        //}
-
-//        if (knowNugget) {
-//            for(int i = 0; i < 3; i++) {
-//                if (!hiddenRevealed[i]) {
-//                    //SaboteurTile tile = this.board[hiddenPos[i][0]][hiddenPos[i][1]];
-//                    int idx = startRand.nextInt(list.size());
-//                    this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(list.remove(idx));
-//                }
-//            }
-//        } else {
-//            list.clear();
-//            list.add("hidden1");
-//            list.add("hidden2");
-//            for(int i = 0; i < 3; i++) {
-//                if (i == nuggetPos) {
-//                    this.board[hiddenPos[nuggetPos][0]][hiddenPos[nuggetPos][1]] = new SaboteurTile("nugget");
-//                } else {
-//                    int idx = startRand.nextInt(list.size());
-//                    this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(list.remove(idx));
-//
-//                }
-//            }
-//        }
 
         for (int i = 0; i < 3; i++) {
             this.hiddenCards[i] = this.board[hiddenPos[i][0]][hiddenPos[i][1]];
@@ -229,10 +224,10 @@ public class RandomState {
         turnNumber = 0;
         //beliefState = new BeliefState(turnPlayer);
         if (turnPlayer == 1) {
-            Arrays.fill(player2hiddenRevealed, true);
+            Arrays.fill(player2hiddenRevealed, new Random().nextInt(1) == 1);
             System.arraycopy(hiddenRevealed, 0, player1hiddenRevealed, 0, 3);
         } else {
-            Arrays.fill(player1hiddenRevealed, true);
+            Arrays.fill(player1hiddenRevealed, new Random().nextInt(1) == 1);
             System.arraycopy(hiddenRevealed, 0, player2hiddenRevealed, 0, 3);
         }
 
@@ -244,7 +239,7 @@ public class RandomState {
      */
     private void removeCardFromList(SaboteurCard cardToRemove, ArrayList<SaboteurCard> list) {
         for(SaboteurCard card : list) {
-            if (card instanceof SaboteurTile) {
+            if (cardToRemove instanceof SaboteurTile && card instanceof SaboteurTile) {
                 if (((SaboteurTile) card).getIdx().equals(((SaboteurTile) cardToRemove).getIdx())) {
                     list.remove(card);
                     break; //leave the loop....
@@ -270,6 +265,107 @@ public class RandomState {
         }
     }
 
+//    public int numOfCardAboveOrigin() {
+//        int ret = 0;
+//        for (int i = 0; i < originPos; i++) {
+//            for (int j = 0; j < BOARD_SIZE; j++) {
+//                if (board[i][j] != null) {
+//                    ret++;
+//                }
+//            }
+//        }
+//        return ret;
+//    }
+
+    public int scoreTiles() {
+        int ret = 0;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (board[i][j] != null) {
+                    if (i < originPos) {
+                        ret -= 50;
+                    } if (j >= originPos - 2 && j <= originPos + 2) {
+                        ret += 2;
+                    }
+                    String idx = board[i][j].getIdx();
+                    if (board[i][j].getPath()[1][1] == 0 || idx.equals("4") || idx.equals("4_flipped") || idx.equals("12") || idx.equals("12_flipped")) {
+                        ret -= 50;
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    public int scoreHand() {
+        int ret = 0;
+        ArrayList<SaboteurCard> hand = getCurrentPlayerCards();
+        for (SaboteurCard c: hand) {
+            if (c instanceof SaboteurTile ) {
+                String idx = ((SaboteurTile) c).getIdx();
+                if (((SaboteurTile)c).getPath()[1][1] == 0 || idx.equals("4") || idx.equals("4_flipped") || idx.equals("12") || idx.equals("12_flipped")) {
+                    ret -= 50;
+                }
+            }
+        }
+        return ret;
+    }
+
+    public ArrayList<SaboteurCard> getCurrentPlayerCards(){
+        if(turnPlayer==1){
+            ArrayList<SaboteurCard> p1Cards = new ArrayList<SaboteurCard>();
+            for(int i=0;i<this.player1Cards.size();i++){
+                p1Cards.add(i,SaboteurCard.copyACard(this.player1Cards.get(i).getName()));
+            }
+            return p1Cards;
+        }
+        else{
+            ArrayList<SaboteurCard> p2Cards = new ArrayList<SaboteurCard>();
+            for(int i=0;i<this.player2Cards.size();i++){
+                p2Cards.add(i,SaboteurCard.copyACard(this.player2Cards.get(i).getName()));
+            }
+            return p2Cards;
+        }
+    }
+
+    public int distanceToHidden() {
+        int dist = Integer.MAX_VALUE;
+
+        ArrayList<int[]> queue = new ArrayList<>(); //will store the current neighboring tile. Composed of position (int[]).
+        ArrayList<int[]> visited = new ArrayList<int[]>();
+        ArrayList<int[]> origin = new ArrayList<>();
+        //the starting points
+        queue.add(new int[]{originPos*3+1, originPos*3+1});
+        queue.add(new int[]{originPos*3+1, originPos*3+2});
+        queue.add(new int[]{originPos*3+1, originPos*3});
+        queue.add(new int[]{originPos*3, originPos*3+1});
+        queue.add(new int[]{originPos*3+2, originPos*3+1});
+
+        while(queue.size()>0){
+            int[] visitingPos = queue.remove(0);
+//            if(containsIntArray(originTargets,visitingPos)){
+//                return true;
+//            }
+            visited.add(visitingPos);
+            int size = queue.size();
+//            if(usingCard) addUnvisitedNeighborToQueue(visitingPos,queue,visited,BOARD_SIZE,usingCard);
+//            else
+            addUnvisitedNeighborToQueue(visitingPos,queue,visited,BOARD_SIZE*3,false);
+            if (queue.size() == size) {
+                int d;
+                int nuggetPos = nuggetRevealed();
+                if (nuggetPos != -1) {
+                    d = Math.abs(visitingPos[0] - hiddenPos[nuggetPos][0] * 3) + Math.abs(visitingPos[1] - hiddenPos[nuggetPos][1] * 3);
+                }
+                else  d = Math.abs(visitingPos[0] - hiddenPos[0][0] * 3);
+                dist = Math.min(dist, d);
+            }
+//            System.out.println(queue.size());
+        }
+
+
+        return dist;
+    }
 
     public void processMove(SaboteurMove m) {
         SaboteurCard testCard = m.getCardPlayed();
@@ -547,7 +643,7 @@ public class RandomState {
             visited.add(visitingPos);
             if(usingCard) addUnvisitedNeighborToQueue(visitingPos,queue,visited,BOARD_SIZE,usingCard);
             else addUnvisitedNeighborToQueue(visitingPos,queue,visited,BOARD_SIZE*3,usingCard);
-            System.out.println(queue.size());
+            //System.out.println(queue.size());
         }
         return false;
     }
@@ -774,5 +870,7 @@ public class RandomState {
 
         return true;
     }
+
+
 
 }

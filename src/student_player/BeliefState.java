@@ -32,18 +32,17 @@ public class BeliefState {
         int win = 0;
         for (AvailableState s: states) {
 
-            if (s.gameOver() || s.getTurnNumber() > 10) {
+            if (s.gameOver() || s.getTurnNumber() > 3) {
 
                 if (s.getWinner() == player) {
                     win++;
                     //continue;
                 }
             } else {
-                for (SaboteurMove move : s.getAllLegalMoves()) {
-                    AvailableState scp = new AvailableState(s);
-                    scp.processMove(move);
-                    win += scp.beliefState.simulate();
-                }
+                SaboteurMove move = s.getRandomMove();
+                AvailableState scp = new AvailableState(s);
+                scp.processMove(move);
+                win += scp.beliefState.simulate();
             }
 
         }
