@@ -8,6 +8,10 @@ import boardgame.Move;
 import java.util.ArrayList;
 
 public class MontePlayer extends SaboteurPlayer {
+	public MontePlayer() {
+        super("MontePlayer");
+    }
+
     @Override
     public Move chooseMove(SaboteurBoardState boardState) {
         int player = boardState.getTurnPlayer();

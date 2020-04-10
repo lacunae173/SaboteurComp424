@@ -1,0 +1,68 @@
+# Server version 0.08 running on jiayaos-mbp:8123
+# Game ID: 9
+# Board class: Saboteur.SaboteurBoard
+# Timeout: 20000
+# First Move Timeout: 30000
+# Date: Fri Apr 10 17:33:25 EDT 2020
+# Player 1: Player-0, 'RandomPlayer', running on jiayaos-mbp
+# Player 2: Player-1, 'MontePlayer', running on jiayaos-mbp
+START Player-0 RandomPlayer
+START Player-1 MontePlayer
+BoardInit:Tile:9,Tile:10,Tile:0,Bonus,Tile:7,Tile:8,Tile:7,Map,Destroy,Tile:1,Tile:7,Tile:4,Tile:10,Tile:9,Tile:6,Tile:0,Tile:11,Malus,Tile:8,Tile:6,Tile:9,Tile:12,Map,Map,Malus,Tile:10,Tile:5,Tile:9,Tile:8,Tile:7,Tile:8,Tile:14,Bonus,Tile:5,Tile:6,Bonus,Tile:6,Tile:2,Tile:0,Map,Map-Bonus,Tile:13,Tile:3,Tile:5,Tile:0,Destroy,Map-Tile:9,Tile:5,Tile:7,Destroy,Tile:6,Tile:15,Tile:8-Tile:hidden2,Tile:hidden1,Tile:nugget
+Tile:13 5 4 1
+Tile:7 6 5 0
+Tile:3_flip 5 6 1
+Tile:5_flip 6 4 0
+Tile:5 4 5 1
+Tile:8 6 6 0
+Tile:0 4 4 1
+Tile:9_flip 4 6 0
+Destroy 4 4 1
+Drop 0 0 0
+Map 12 3 1
+Tile:6 7 6 0
+Tile:9 7 5 1
+Drop 0 0 0
+Tile:7_flip 3 6 1
+Tile:10 7 4 0
+Tile:7_flip 4 4 1
+Tile:8 8 5 0
+Tile:11_flip 3 5 1
+Tile:9_flip 6 7 0
+Destroy 6 4 1
+Tile:6 9 5 0
+Drop 3 0 1
+Tile:1 5 7 0
+Tile:9_flip 8 6 1
+Tile:4 9 4 0
+Drop 3 0 1
+Map 12 3 0
+Tile:0 2 5 1
+Tile:9 6 8 0
+Tile:7_flip 8 7 1
+Drop 2 0 0
+Tile:8 1 5 1
+Tile:7 9 7 0
+Tile:5_flip 10 5 1
+Tile:5 0 5 0
+Drop 0 0 1
+Tile:14 9 8 0
+Tile:8 6 9 1
+Tile:2_flip 0 6 0
+Tile:6_flip 8 8 1
+Drop 0 0 0
+Drop 3 0 1
+Map 12 3 0
+Drop 0 0 1
+Drop 3 0 0
+Drop 2 0 1
+Tile:0 5 9 0
+Tile:8 6 10 1
+Tile:10 6 11 0
+Drop 2 0 1
+Tile:12 7 9 0
+Tile:0 7 8 1
+Map 12 7 0
+Drop 0 0 1
+GAMEOVER DRAW
+# Game ended: Fri Apr 10 17:33:33 EDT 2020
