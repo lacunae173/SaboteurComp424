@@ -7,6 +7,11 @@ import java.util.ArrayList;
 
 public class BeliefState {
     ArrayList<AvailableState> states = new ArrayList<>();
+
+    public int getPlayer() {
+        return player;
+    }
+
     private int player;
 
     public BeliefState(int player) {

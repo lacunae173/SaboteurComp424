@@ -29,7 +29,17 @@ public class AvailableState {
     // Note: Player 1 is active when turnplayer is 1;
     private ArrayList<SaboteurCard> player1Cards = new ArrayList<>(); //hand of player 1
     private ArrayList<SaboteurCard> player2Cards = new ArrayList<>(); //hand of player 2
+
+    public int getPlayer1nbMalus() {
+        return player1nbMalus;
+    }
+
     private int player1nbMalus;
+
+    public int getPlayer2nbMalus() {
+        return player2nbMalus;
+    }
+
     private int player2nbMalus;
     //TODO: do we know other players hidden?
     private boolean[] player1hiddenRevealed = {false,false,false};
@@ -38,6 +48,10 @@ public class AvailableState {
     public static final int[][] hiddenPos = {{originPos+7,originPos-2},{originPos+7,originPos},{originPos+7,originPos+2}};
     protected SaboteurTile[] hiddenCards = new SaboteurTile[3];
     private boolean[] hiddenRevealed = {false,false,false}; //whether hidden at pos1 is revealed, hidden at pos2 is revealed, hidden at pos3 is revealed.
+
+    public int getTurnPlayer() {
+        return turnPlayer;
+    }
 
     private int turnPlayer;
 
@@ -49,6 +63,21 @@ public class AvailableState {
 
     public int getWinner() {
         return winner;
+    }
+
+    public int nuggetRevealed() {
+        for (int i = 0; i < 3; i++) {
+            if (turnPlayer == 1) {
+               if (player1hiddenRevealed[i] && hiddenCards[i].getIdx().equals("nugget")) {
+                   return i;
+                }
+            } else {
+                if (player2hiddenRevealed[i] && hiddenCards[i].getIdx().equals("nugget")) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 
     private int winner;
@@ -172,7 +201,6 @@ public class AvailableState {
         list.add("hidden1");
         list.add("hidden2");
         list.add("nugget");
-        Random startRand = new Random();
         boolean knowNugget = false;
         boolean[] posSet = {false, false, false};
         for(int i = 0; i < 3; i++) {
@@ -199,12 +227,28 @@ public class AvailableState {
 //                }
 //            }
         } //else {
-            for(int i = 0; i < 3; i++) {
-                if (!posSet[i]) {
-                    int idx = startRand.nextInt(list.size());
-                    this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(list.remove(idx));
-                }
+//        for(int i = 0; i < 3; i++) {
+//            if (!posSet[i]) {
+//                if (list.size() < 1) {
+//                    break;
+//                }
+//
+//                this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(list.remove(0));
+//            }
+//        }
+        list.add("hidden1");
+        list.add("hidden2");
+        list.add("nugget");
+        for(int i = 0; i < 3; i++) {
+            if (!this.board[hiddenPos[i][0]][hiddenPos[i][1]].getIdx().equals("8")) {
+                list.remove(this.board[hiddenPos[i][0]][hiddenPos[i][1]].getIdx());
             }
+        }
+        for(int i = 0; i < 3; i++) {
+            if (this.board[hiddenPos[i][0]][hiddenPos[i][1]].getIdx().equals("8")) {
+                this.board[hiddenPos[i][0]][hiddenPos[i][1]] = new SaboteurTile(list.remove(0));
+            }
+        }
         //}
 
 //        if (knowNugget) {
@@ -232,6 +276,11 @@ public class AvailableState {
 
         for (int i = 0; i < 3; i++) {
             this.hiddenCards[i] = this.board[hiddenPos[i][0]][hiddenPos[i][1]];
+            if (turnPlayer == 1) {
+                player1hiddenRevealed[i] = hiddenRevealed[i];
+            } else {
+                player2hiddenRevealed[i] = hiddenRevealed[i];
+            }
         }
 
         //initialize the players hands:
@@ -431,9 +480,9 @@ public class AvailableState {
                 this.player1Cards.remove(pos[0]);
             }
             else {
-                if (player2Cards.size() < 7) {
-                    System.out.println("?");
-                }
+//                if (player2Cards.size() < 7) {
+//                    //System.out.println("?");
+//                }
                 this.player2Cards.remove(pos[0]);
             }
         }
@@ -551,6 +600,9 @@ public class AvailableState {
                     currentTargetIdx = i;
                     break;
                 }
+            }
+            if (currentTargetIdx == -1) {
+                System.out.println("not found");
             }
             if(!this.hiddenRevealed[currentTargetIdx]) {  //verify that the current target has not been already discovered. Even if there is a destruction event, the target keeps being revealed!
 
@@ -829,6 +881,45 @@ public class AvailableState {
         if(numberOfEmptyAround==requiredEmptyAround)  return false;
 
         return true;
+    }
+
+    public int distanceToHidden() {
+        int dist = Integer.MAX_VALUE;
+
+        ArrayList<int[]> queue = new ArrayList<>(); //will store the current neighboring tile. Composed of position (int[]).
+        ArrayList<int[]> visited = new ArrayList<int[]>();
+        ArrayList<int[]> origin = new ArrayList<>();
+        //the starting points
+        queue.add(new int[]{originPos*3+1, originPos*3+1});
+        queue.add(new int[]{originPos*3+1, originPos*3+2});
+        queue.add(new int[]{originPos*3+1, originPos*3});
+        queue.add(new int[]{originPos*3, originPos*3+1});
+        queue.add(new int[]{originPos*3+2, originPos*3+1});
+
+        while(queue.size()>0){
+            int[] visitingPos = queue.remove(0);
+//            if(containsIntArray(originTargets,visitingPos)){
+//                return true;
+//            }
+            visited.add(visitingPos);
+            int size = queue.size();
+//            if(usingCard) addUnvisitedNeighborToQueue(visitingPos,queue,visited,BOARD_SIZE,usingCard);
+//            else
+            addUnvisitedNeighborToQueue(visitingPos,queue,visited,BOARD_SIZE*3,false);
+            if (queue.size() == size) {
+                int d;
+                int nuggetPos = nuggetRevealed();
+                if (nuggetPos != -1) {
+                    d = Math.abs(visitingPos[0] - hiddenPos[nuggetPos][0] * 3) + Math.abs(visitingPos[1] - hiddenPos[nuggetPos][1] * 3);
+                }
+                else  d = Math.abs(visitingPos[0] - hiddenPos[0][0] * 3);
+                dist = Math.min(dist, d);
+            }
+//            System.out.println(queue.size());
+        }
+
+
+        return dist;
     }
 
 }
