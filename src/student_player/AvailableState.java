@@ -124,7 +124,7 @@ public class AvailableState {
         player1nbMalus = state.player1nbMalus;
         player2nbMalus = state.player2nbMalus;
         for (int i = 0; i < BOARD_SIZE * 3; i++) {
-            System.arraycopy(state.intBoard[i], 0, this.intBoard[i], 0, BOARD_SIZE);
+            System.arraycopy(state.intBoard[i], 0, this.intBoard[i], 0, BOARD_SIZE * 3);
         }
         System.arraycopy(state.hiddenCards, 0, this.hiddenCards, 0, 3);
         System.arraycopy(state.hiddenRevealed, 0, this.hiddenRevealed, 0, 3);
