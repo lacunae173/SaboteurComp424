@@ -35,7 +35,7 @@ public class BeliefState {
 //            if (s.gameOver() || s.getTurnNumber() > 3) {
 
     public int simulate(int win) {
-        int dist = Integer.MAX_VALUE;
+        int dist = 20;
         for (AvailableState s : states) {
             if (s.gameOver() || s.getTurnNumber() > 50) {
                 if (s.getWinner() == player) {
@@ -53,7 +53,7 @@ public class BeliefState {
                     SaboteurMove move = s.getRandomMoveFromPM();
                     AvailableState scp = new AvailableState(s);
                     scp.processMove(move);
-                    if(scp.distanceToHidden()<dist){
+                    if(scp.distanceToHidden() < dist){
                         dist = scp.distanceToHidden();
                         tmp = move;
                     }

@@ -777,7 +777,14 @@ public class AvailableState {
                 }
             }
             else if(card instanceof SaboteurTile && !isBlocked){
-                ArrayList<int[]> allowedPositions = pathToAddedTile(possiblePositions((SaboteurTile)card));
+                ArrayList<int[]> tmp1 = pathToAddedTile(possiblePositions((SaboteurTile)card));
+                ArrayList<int[]> tmp2 = pathToAddedTile(possiblePositions(((SaboteurTile)card).getFlipped()));
+                int alen = tmp1.size();
+                int blen = tmp2.size();
+                ArrayList<int[]> allowedPositions = new ArrayList<int[]>();
+                allowedPositions.addAll(tmp1);
+                allowedPositions.addAll(tmp2);
+
                 for(int[] pos:allowedPositions){
                     legalMoves.add(new SaboteurMove(card,pos[0],pos[1],turnPlayer));
                 }
