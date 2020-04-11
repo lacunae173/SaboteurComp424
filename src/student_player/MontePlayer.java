@@ -6,6 +6,7 @@ import Saboteur.SaboteurPlayer;
 import boardgame.Move;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MontePlayer extends SaboteurPlayer {
 	public MontePlayer() {
@@ -17,7 +18,8 @@ public class MontePlayer extends SaboteurPlayer {
         int player = boardState.getTurnPlayer();
         ArrayList<SaboteurMove> moves = boardState.getAllLegalMoves();
         SaboteurMove maxMove = null;
-        int maxWin = Integer.MIN_VALUE;
+//        int maxWin = Integer.MIN_VALUE;
+        int heu = Integer.MAX_VALUE;
         for (SaboteurMove m: moves) {
 //            SaboteurBoardState state = (SaboteurBoardState) boardState.clone();
 //            int win = 0;
@@ -52,16 +54,19 @@ public class MontePlayer extends SaboteurPlayer {
                 System.out.println("it's ok, let's try another path.");
                 continue;
             }
+            ArrayList<SaboteurMove> potenMoves = new ArrayList<SaboteurMove>();
+            ArrayList<Integer> heuristic =new ArrayList<Integer>();
             int win = 0;
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 5; i++) {
                 for (AvailableState s: startStates.states) {
-                    win += s.beliefState.simulate(0);
+                	SaboteurMove move = s.getRandomMove();
+                	s.processMove(move);
+                	potenMoves.add(move);
+                	
+                    
                 }
             }
-            if (win > maxWin) {
-                maxWin = win;
-                maxMove = m;
-            }
+
 
 //            int win = 0;
 //            for (int i = 0; i < 1; i++) {

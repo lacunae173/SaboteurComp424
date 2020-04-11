@@ -189,7 +189,7 @@ public class AvailableState {
         deck.add(new SaboteurBonus());
         deck.add(new SaboteurMap());
     }
-
+    
 
     public AvailableState(SaboteurBoardState boardState, int nuggetPos) {
 
