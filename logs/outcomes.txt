@@ -37,3 +37,12 @@
 40,RandomPlayer,Player,GAMEOVER DRAW,NOBODY,56,game00040.log,
 41,RandomPlayer,Player,0,RandomPlayer,37,game00041.log,TIMEOUT
 42,RandomPlayer,Player,GAMEOVER DRAW,NOBODY,56,game00042.log,
+5,NearlyRandomPlayer,Human,1,Human,2,game00005.log,TIMEOUT
+6,NearlyRandomPlayer,RandomPlayer,GAMEOVER DRAW,NOBODY,56,game00006.log,
+7,NearlyRandomPlayer,RandomPlayer,1,RandomPlayer,2,game00007.log,TIMEOUT
+8,NearlyRandomPlayer,Human,0,NearlyRandomPlayer,9,game00008.log,
+9,NearlyRandomPlayer,RandomPlayer,GAMEOVER DRAW,NOBODY,56,game00009.log,
+10,NearlyRandomPlayer,RandomPlayer,0,NearlyRandomPlayer,41,game00010.log,
+11,NearlyRandomPlayer,RandomPlayer,GAMEOVER DRAW,NOBODY,56,game00011.log,
+12,RandomPlayer,NearlyRandomPlayer,0,RandomPlayer,17,game00012.log,
+13,NearlyRandomPlayer,RandomPlayer,GAMEOVER DRAW,NOBODY,56,game00013.log,

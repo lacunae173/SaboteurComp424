@@ -48,11 +48,18 @@ public class NearlyRandomSaboteurPlayer extends SaboteurPlayer {
     private ArrayList<SaboteurMove> tileMoves = new ArrayList<>();
     private ArrayList<SaboteurMove> malusMoves = new ArrayList<>();
 
+    private ArrayList<SaboteurMove> removeMoves = new ArrayList<>();
+
     public SaboteurMove randomMoveFromList(ArrayList<SaboteurMove> moves) {
+        if (moves.size() < 1) return null;
         return moves.get(new Random().nextInt(moves.size()));
     }
 
-    public SaboteurMove chooseDropOrDestroy(ArrayList<SaboteurMove> moves, SaboteurBoardState state) {
+    public ArrayList<SaboteurMove> chooseTileMoves(ArrayList<SaboteurMove> moves, SaboteurBoardState state) {
+        return null;
+    }
+
+    public ArrayList<SaboteurMove> chooseDropOrDestroy(ArrayList<SaboteurMove> moves, SaboteurBoardState state) {
         SaboteurTile[][] board = state.getHiddenBoard();
         ArrayList<SaboteurCard> hand = state.getCurrentPlayerCards();
         ArrayList<SaboteurMove> movesToConsider = new ArrayList<>();
@@ -60,7 +67,9 @@ public class NearlyRandomSaboteurPlayer extends SaboteurPlayer {
             SaboteurCard card = null;
             if (m.getCardPlayed() instanceof SaboteurDrop) {
                 int[] pos = m.getPosPlayed();
-                card = hand.get(pos[0]);
+                if (pos[0] < hand.size()) {
+                    card = hand.get(pos[0]);
+                }
 
             } else if (m.getCardPlayed() instanceof SaboteurDestroy) {
                 int[] pos = m.getPosPlayed();
@@ -73,7 +82,11 @@ public class NearlyRandomSaboteurPlayer extends SaboteurPlayer {
                 }
             }
         }
-        return movesToConsider.get(new Random().nextInt(moves.size()));
+//        if (movesToConsider.size() < 1) {
+//            return moves.get(new Random().nextInt(moves.size()));
+//        }
+//        return movesToConsider.get(new Random().nextInt(movesToConsider.size()));
+        return movesToConsider;
     }
 
     @Override
@@ -83,8 +96,36 @@ public class NearlyRandomSaboteurPlayer extends SaboteurPlayer {
         mapMoves.clear();
         destroyMoves.clear();
         dropMoves.clear();
+
         tileMoves.clear();
         malusMoves.clear();
+        SaboteurTile[][] tiles = boardState.getHiddenBoard();
+        int[][] hiddenPos = boardState.hiddenPos;
+        SaboteurTile[] hiddenTiles = new SaboteurTile[3];
+        int[] nugget = null;
+        boolean[] hidden = {false, false, false};
+        int numHidden = 0;
+
+        for(int i = 0; i < 3; i++){
+            SaboteurTile tile = tiles[hiddenPos[i][0]][hiddenPos[i][1]];
+            if (tile.getIdx().equals("nugget")) {
+                nugget = hiddenPos[i];
+                break;
+            } else if (tile.getIdx().equals("8")) {
+                hidden[i] = true;
+                numHidden++;
+            }
+        }
+        if (numHidden == 1) {
+            for (int i = 0; i < 3; i++) {
+                if (hidden[i]) {
+                    nugget = hiddenPos[i];
+                }
+            }
+        }
+
+        SaboteurMove ret = null;
+
         for (SaboteurMove m: moves) {
             if (m.getCardPlayed() instanceof SaboteurBonus) {
                 bonusMoves.add(m);
@@ -94,9 +135,11 @@ public class NearlyRandomSaboteurPlayer extends SaboteurPlayer {
             }
             else if (m.getCardPlayed() instanceof SaboteurDestroy) {
                 destroyMoves.add(m);
+                removeMoves.add(m);
             }
             else if (m.getCardPlayed() instanceof SaboteurDrop) {
                 dropMoves.add(m);
+                removeMoves.add(m);
             }
             else if (m.getCardPlayed() instanceof SaboteurTile) {
                 tileMoves.add(m);
@@ -111,46 +154,44 @@ public class NearlyRandomSaboteurPlayer extends SaboteurPlayer {
         if (isBlocked) {
             if (bonusMoves.size() > 0) {
                 return randomMoveFromList(bonusMoves);
-            } else if (mapMoves.size() > 0) {
+            } else if (mapMoves.size() > 0 && nugget == null) {
+
                 return randomMoveFromList(mapMoves);
-            } else if (destroyMoves.size() > 0) {
-                return randomMoveFromList(destroyMoves);
-            } else if (dropMoves.size() > 0) {
-                return randomMoveFromList(dropMoves);
-            }
-        } else {
-            SaboteurTile[][] tiles = boardState.getHiddenBoard();
-            int[][] hiddenPos = boardState.hiddenPos;
-            SaboteurTile[] hiddenTiles = new SaboteurTile[3];
-            int[] nugget = null;
-            boolean[] hidden = {false, false, false};
-            int numHidden = 0;
-            for(int i = 0; i < 3; i++){
-                SaboteurTile tile = tiles[hiddenPos[i][0]][hiddenPos[i][1]];
-                if (tile.getIdx().equals("nugget")) {
-                    nugget = hiddenPos[i];
-                    break;
-                } else if (tile.getIdx().equals("8")) {
-                    hidden[i] = true;
-                    numHidden++;
+            } else {
+                ArrayList<SaboteurMove> dropOrDestroy = chooseDropOrDestroy(removeMoves, boardState);
+                if (dropOrDestroy.size() > 0) {
+                    ret = randomMoveFromList(dropOrDestroy);
+                } else {
+                    ret = randomMoveFromList(moves);
                 }
             }
-            if (numHidden <= 1) {
+//            } else if (destroyMoves.size() > 0) {
+//                return randomMoveFromList(destroyMoves);
+//            } else if (dropMoves.size() > 0) {
+//                return randomMoveFromList(dropMoves);
+//            }
 
-            }
+        } else {
 
+            ArrayList<SaboteurMove> badTiles = new ArrayList<>();
             SaboteurMove minMove = null;
             int minDistance = 21;
             for (SaboteurMove m: tileMoves) {
                 int[][] intBoard = boardState.getHiddenIntBoard();
                 int[] pos = m.getPosPlayed();
                 SaboteurTile tile = (SaboteurTile) m.getCardPlayed();
-                int[][] path = tile.getPath();
-                putCardOnIntBoard(intBoard, path, pos);
-                int distance = getDistanceToGold(boardState, nugget);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    minMove = m;
+
+                if (!tileHasTunnel(tile) && pos[0] > 5) {
+                    int[][] path = tile.getPath();
+                    putCardOnIntBoard(intBoard, path, pos);
+                    int distance = getDistanceToGold(intBoard, nugget);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        minMove = m;
+                    }
+                }
+                else {
+                    badTiles.add(m);
                 }
             }
 
@@ -183,20 +224,27 @@ public class NearlyRandomSaboteurPlayer extends SaboteurPlayer {
 //                    }
 //                }
 //            }
-            if (minMove != null) {
+            if (minMove != null && minDistance < 20) {
                 return minMove;
             } else {
+                if (mapMoves.size() > 0 && nugget == null) {
+                    return randomMoveFromList(mapMoves);
+                }
                 if (malusMoves.size() > 0) {
                     return randomMoveFromList(malusMoves);
 
                 }
-                destroyMoves.addAll(dropMoves);
-                return chooseDropOrDestroy(destroyMoves, boardState);
+                ArrayList<SaboteurMove> dropOrDestroy = chooseDropOrDestroy(removeMoves, boardState);
+                badTiles.addAll(dropOrDestroy);
+                ret = randomMoveFromList(badTiles);
             }
 
         }
-        return randomMoveFromList(moves);
+        if(boardState.isLegal(ret)) return ret;
+        else return boardState.getRandomMove();
+        //return randomMoveFromList(moves);
     }
+
 
     private void putCardOnIntBoard(int[][] board, int[][] path, int[] pos) {
         for (int i = 0; i < 3; i++) {
@@ -206,7 +254,17 @@ public class NearlyRandomSaboteurPlayer extends SaboteurPlayer {
         }
     }
 
-    private int getDistanceToGold(SaboteurBoardState state, int[] nugget) {
+    private int[] getPosClosestToGold(SaboteurTile[][] board) {
+        int[] ret = new int[2];
+        for (int i = 0; i < SaboteurBoardState.BOARD_SIZE; i++) {
+            for (int j = SaboteurBoardState.BOARD_SIZE; j >= 0; j--) {
+
+            }
+        }
+        return null;
+    }
+
+    private int getDistanceToGold(int[][] intBoard, int[] nugget) {
         int originPos = SaboteurBoardState.originPos;
         int dist = Integer.MAX_VALUE;
 
@@ -229,7 +287,7 @@ public class NearlyRandomSaboteurPlayer extends SaboteurPlayer {
             int size = queue.size();
 //            if(usingCard) addUnvisitedNeighborToQueue(visitingPos,queue,visited,BOARD_SIZE,usingCard);
 //            else
-            addUnvisitedNeighborToQueue(state.getHiddenIntBoard(), visitingPos,queue,visited,SaboteurBoardState.BOARD_SIZE*3);
+            addUnvisitedNeighborToQueue(intBoard, visitingPos,queue,visited,SaboteurBoardState.BOARD_SIZE*3);
             if (queue.size() == size) {
                 int d;
                 if (nugget != null) {
@@ -271,6 +329,11 @@ public class NearlyRandomSaboteurPlayer extends SaboteurPlayer {
             }
         }
         return false;
+    }
+
+    private boolean tileHasTunnel(SaboteurTile tile) {
+        String idx = tile.getIdx();
+        return tile.getPath()[1][1] == 0 || idx.equals("4") || idx.equals("4_flipped") || idx.equals("12") || idx.equals("12_flipped");
     }
 
     private int distance(int[] pos1, int[] pos2) {
